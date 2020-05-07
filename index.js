@@ -2,7 +2,9 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+const express = require("express");
 const app = express();
+const port = process.env.PORT || 5000;
 
 const Particle = require("particle-api-js");
 const particle = new Particle();
@@ -42,4 +44,8 @@ connectionStatus = (device) => {
 
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/public/index.html");
+});
+
+app.listen(port, () => {
+  console.log(`App is listening on ${port}...`);
 });
