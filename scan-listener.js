@@ -59,6 +59,23 @@ performTagAction = (scannedTag) => {
           }, 9000)
         );
       break;
+    case "Darth Vader (Force FX)":
+      obsCon.obs
+        .send("SetSceneItemProperties", {
+          "scene-name": "Popups",
+          item: "IAmTheHype",
+          visible: true,
+        })
+        .then(
+          setTimeout(function () {
+            obsCon.obs.send("SetSceneItemProperties", {
+              "scene-name": "Popups",
+              item: "IAmTheHype",
+              visible: false,
+            });
+          }, 4000)
+        );
+      break;
     default:
       console.log(
         `Tag with ID ${scannedTag.id} has no actions associated to it!`
