@@ -46,6 +46,10 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + "/public/index.html");
 });
 
+app.get("/*", function (req, res) {
+  res.sendFile(__dirname + "/public/404.html");
+});
+
 app.listen(port, () => {
   console.log(`App is listening on ${port}...`);
 });
