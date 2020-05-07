@@ -76,6 +76,23 @@ performTagAction = (scannedTag) => {
           }, 4000)
         );
       break;
+    case "Infinity Gauntlet":
+      obsCon.obs
+        .send("SetSceneItemProperties", {
+          "scene-name": "Popups",
+          item: "ShotDisclaimer",
+          visible: true,
+        })
+        .then(
+          setTimeout(function () {
+            obsCon.obs.send("SetSceneItemProperties", {
+              "scene-name": "Popups",
+              item: "ShotDisclaimer",
+              visible: false,
+            });
+          }, 5000)
+        );
+      break;
     default:
       console.log(
         `Tag with ID ${scannedTag.id} has no actions associated to it!`
