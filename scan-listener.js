@@ -14,10 +14,14 @@ findOrCreateTag = (id) => {
         origin: "Unknown origin",
         type: "Unkown type",
         name: "Unknown name",
+        lastScanTime: Date(Date.now()),
       });
       newTag.save();
       tag = newTag;
     }
+
+    tag.lastScanTime = Date(Date.now());
+    tag.save();
 
     particle.publishEvent({
       name: "scan_info",

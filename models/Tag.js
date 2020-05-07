@@ -19,6 +19,10 @@ const TagSchema = new Schema({
     type: String,
     required: true,
   },
+  lastScanTime: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = Tag = mongoose.model("tag", TagSchema);

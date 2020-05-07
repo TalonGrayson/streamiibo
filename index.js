@@ -46,6 +46,10 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + "/public/index.html");
 });
 
+app.get("/mytags", function (req, res) {
+  res.sendFile(__dirname + "/public/my_tags.html");
+});
+
 app.get("/*", function (req, res) {
   res.sendFile(__dirname + "/public/404.html");
 });
