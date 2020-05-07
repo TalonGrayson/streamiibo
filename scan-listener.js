@@ -1,4 +1,4 @@
-const obsCon = require("./obs-connector");
+//const obsCon = require("./obs-connector");
 const Particle = require("particle-api-js");
 const particle = new Particle();
 const token = process.env.PARTICLE_ACCESS_TOKEN;
@@ -103,6 +103,7 @@ performTagAction = (scannedTag) => {
 
 module.exports.particleEventListener = (incoming_payload) => {
   findOrCreateTag(incoming_payload.data).then((scannedTag) => {
-    performTagAction(scannedTag);
+    //performTagAction(scannedTag);
+    console.log(scannedTag);
   });
 };
