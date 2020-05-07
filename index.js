@@ -2,6 +2,8 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+const app = express();
+
 const Particle = require("particle-api-js");
 const particle = new Particle();
 const token = process.env.PARTICLE_ACCESS_TOKEN;
@@ -37,3 +39,7 @@ connectionStatus = (device) => {
     } connected.`
   );
 };
+
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + "/public/index.html");
+});
