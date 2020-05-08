@@ -14,11 +14,19 @@ findOrCreateTag = (id) => {
         type: "Unkown type",
         name: "Unknown name",
         lastScanTime: Date(Date.now()),
+        attack: Math.floor(Math.random() * 10) + 1,
+        health: Math.floor(Math.random() * 10) + 1,
+        defense: Math.floor(Math.random() * 10) + 1,
+        speed: Math.floor(Math.random() * 10) + 1,
       });
       newTag.save();
       tag = newTag;
     }
 
+    tag.attack = Math.floor(Math.random() * 10) + 1;
+    tag.health = Math.floor(Math.random() * 10) + 1;
+    tag.defense = Math.floor(Math.random() * 10) + 1;
+    tag.speed = Math.floor(Math.random() * 10) + 1;
     tag.lastScanTime = Date(Date.now());
     tag.save();
 

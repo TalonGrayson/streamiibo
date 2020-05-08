@@ -23,6 +23,22 @@ const TagSchema = new Schema({
     type: String,
     required: true,
   },
+  health: {
+    type: integer,
+    required: true,
+  },
+  defense: {
+    type: integer,
+    required: true,
+  },
+  speed: {
+    type: integer,
+    required: true,
+  },
+  attack: {
+    type: integer,
+    required: true,
+  },
 });
 
 module.exports = Tag = mongoose.model("tag", TagSchema);
