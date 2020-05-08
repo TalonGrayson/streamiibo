@@ -104,9 +104,6 @@ performTagAction = (scannedTag) => {
   }
 };
 
-// module.exports.particleEventListener = (incoming_payload) => {
-//   findOrCreateTag(incoming_payload.data).then((scannedTag) => {
-//     //performTagAction(scannedTag);
-//     console.log(scannedTag);
-//   });
-// };
+module.exports.particleEventListener = (incoming_payload) => {
+  findOrCreateTag(incoming_payload.data);
+};
