@@ -24,19 +24,19 @@ const TagSchema = new Schema({
     required: true,
   },
   health: {
-    type: integer,
+    type: Number,
     required: true,
   },
   defense: {
-    type: integer,
+    type: Number,
     required: true,
   },
   speed: {
-    type: integer,
+    type: Number,
     required: true,
   },
   attack: {
-    type: integer,
+    type: Number,
     required: true,
   },
 });
