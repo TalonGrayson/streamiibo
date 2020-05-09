@@ -23,10 +23,6 @@ findOrCreateTag = (id) => {
       tag = newTag;
     }
 
-    tag.health = Math.floor(Math.random() * 10) + 1;
-    tag.defense = Math.floor(Math.random() * 10) + 1;
-    tag.speed = Math.floor(Math.random() * 10) + 1;
-    tag.attack = Math.floor(Math.random() * 10) + 1;
     tag.lastScanTime = Date(Date.now());
     tag.save();
 

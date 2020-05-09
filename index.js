@@ -46,26 +46,35 @@ connectionStatus = (device) => {
 const Tag = require("./models/Tag");
 
 getAllTags = () => {
-  Tag.find({}, function (err, docs) {
-    console.log(docs);
-    if (err) {
-      return err;
-    }
+  return Tag.find({}, function (err, docs) {
+    //console.log(err);
+    //console.log(docs);
+    // if (err) {
+    //   return err;
+    // }
 
     return docs;
   });
 };
 
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/public/index.html");
+  res.sendFile(__dirname + "/client/public/index.html");
 });
 
 app.get("/mytags", function (req, res) {
-  res.sendFile(__dirname + "/public/my_tags.html");
+  res.sendFile(__dirname + "/client/public/my_tags.html");
+});
+
+app.get("/api/v1/mytags", function (req, res) {
+  getAllTags().then((tags) => res.send(tags));
+});
+
+app.get("/api/v1/tag/:name", function (req, res) {
+  Tag.findOne({ name: req.params.name }).then((tag) => res.json(tag));
 });
 
 app.get("/*", function (req, res) {
-  res.sendFile(__dirname + "/public/404.html");
+  res.sendFile(__dirname + "/client/public/404.html");
 });
 
 app.listen(port, () => {
