@@ -42,6 +42,20 @@ connectionStatus = (device) => {
   );
 };
 
+//  Tag model
+const Tag = require("./models/Tag");
+
+getAllTags = () => {
+  Tag.find({}, function (err, docs) {
+    console.log(docs);
+    if (err) {
+      return err;
+    }
+
+    return docs;
+  });
+};
+
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/public/index.html");
 });
