@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+const moment = require("moment");
 //import './App.css';
 
 class App extends Component {
@@ -50,7 +51,9 @@ class App extends Component {
                     <td>{tag.attack}</td>
                     <td>{tag.defense}</td>
                     <td>{tag.speed}</td>
-                    <td>{tag.lastScanTime}</td>
+                    <td>
+                      {moment(tag.lastScanTime).format("MM/DD/YYYY h:mm a")}
+                    </td>
                   </tr>
                 </Fragment>
               );
