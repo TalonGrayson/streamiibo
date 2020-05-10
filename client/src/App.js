@@ -26,6 +26,33 @@ class App extends Component {
 
     return (
       <div className="App">
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a className="navbar-brand" href="#">
+            Streamiibo
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+
+          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item active">
+                <a className="nav-link" href="./mytags">
+                  My Tags <span className="sr-only">(current)</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
         <table className="table table-dark table-striped">
           <thead>
             <tr>
@@ -37,6 +64,7 @@ class App extends Component {
               <th>Defence</th>
               <th>Speed</th>
               <th>Last Seen</th>
+              <th colSpan="2"></th>
             </tr>
           </thead>
           <tbody>
@@ -54,6 +82,8 @@ class App extends Component {
                     <td>
                       {moment(tag.lastScanTime).format("MM/DD/YYYY h:mm a")}
                     </td>
+                    <td>Edit</td>
+                    <td>Delete</td>
                   </tr>
                 </Fragment>
               );
