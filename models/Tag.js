@@ -39,6 +39,15 @@ const TagSchema = new Schema({
     type: Number,
     required: true,
   },
+  deleted: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  light_rgb: {
+    type: String,
+    required: true,
+  },
 });
 
 module.exports = Tag = mongoose.model("tag", TagSchema);

@@ -2,6 +2,12 @@ const Particle = require("particle-api-js");
 const particle = new Particle();
 const token = process.env.PARTICLE_ACCESS_TOKEN;
 
+// Use Socket.IO for full duplex between server and client
+const express = require("express");
+const app = express();
+const http = require("http").Server(app);
+let io = require("socket.io")(http);
+
 //  Tag model
 const Tag = require("./models/Tag");
 
@@ -18,20 +24,26 @@ findOrCreateTag = (id) => {
         defense: Math.floor(Math.random() * 10) + 1,
         speed: Math.floor(Math.random() * 10) + 1,
         attack: Math.floor(Math.random() * 10) + 1,
+        light_rgb: `${Math.floor(Math.random() * 255) + 1},${
+          Math.floor(Math.random() * 255) + 1
+        },${Math.floor(Math.random() * 255) + 1}`,
       });
       newTag.save();
       tag = newTag;
     }
 
     tag.lastScanTime = Date(Date.now());
+    tag.deleted = false;
     tag.save();
 
     particle.publishEvent({
       name: "scan_info",
-      data: `${tag.origin},${tag.type},${tag.name}`,
+      data: `${tag.origin},${tag.type},${tag.name},${tag.light_rgb}`,
       isPrivate: true,
       auth: token,
     });
+
+    io.emit("scan_detected", { scannedTag: tag });
 
     return tag;
   });
@@ -107,6 +119,15 @@ performTagAction = (scannedTag) => {
       break;
   }
 };
+
+io.on("connection", (socket) => {
+  console.log("Socket connected...");
+  socket.on("disconnect", () => {
+    console.log("Socket disconnected...");
+  });
+});
+
+io.listen(8000);
 
 module.exports.particleEventListener = (incoming_payload) => {
   findOrCreateTag(incoming_payload.data);

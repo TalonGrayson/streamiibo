@@ -20,7 +20,9 @@
     "express": "^4.17.1",
     "moment": "^2.25.3",
     "mongoose": "^5.9.11",
-    "particle-api-js": "^8.3.0"
+    "particle-api-js": "^8.3.0",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
   },
   "engines": {
     "node": "12.11.x"

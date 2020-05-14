@@ -2,19 +2,26 @@
 const dotenv = require("dotenv");
 dotenv.config();
 
+// Use Express for routing
 const express = require("express");
 const path = require("path");
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Use Socket.IO for full duplex between server and client
+// const http = require("http").Server(app);
+// const io = require("socket.io")(http);
+
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
 
+// Particle mumbojumbo
 const Particle = require("particle-api-js");
 const particle = new Particle();
 const token = process.env.PARTICLE_ACCESS_TOKEN;
 const devicesPr = particle.listDevices({ auth: token });
 
+// Requiring this is enough to trigger the connection to the db
 const db = require("./mongodb");
 
 const scanListener = require("./scan-listener");
@@ -51,18 +58,25 @@ const Tag = require("./models/Tag");
 
 getAllTags = () => {
   return Tag.find({}, function (err, docs) {
-    //console.log(err);
-    //console.log(docs);
-    // if (err) {
-    //   return err;
-    // }
+    return docs;
+  });
+};
 
+getActiveTags = () => {
+  return Tag.find({ deleted: false }, function (err, docs) {
+    return docs;
+  });
+};
+
+getDeletedTags = () => {
+  return Tag.find({ deleted: true }, function (err, docs) {
     return docs;
   });
 };
 
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/client/public/index.html");
+  console.log("index");
 });
 
 app.get("/mytags", function (req, res) {
@@ -70,7 +84,20 @@ app.get("/mytags", function (req, res) {
 });
 
 app.get("/api/v1/mytags", function (req, res) {
-  getAllTags().then((tags) => res.send(tags));
+  getActiveTags().then((tags) => res.send(tags));
+});
+
+app.get("/api/v1/mytags/delete/:tag_id", function (req, res) {
+  console.log(`Deleting ${req.params.tag_id}...`);
+
+  Tag.findByIdAndUpdate(
+    req.params.id,
+    { deleted: true },
+    { new: true },
+    function (err, tag) {
+      console.log(`Deleted: ${tag}`);
+    }
+  ).then((tag) => res.redirect("/"));
 });
 
 app.get("/api/v1/tag/:name", function (req, res) {
@@ -80,6 +107,15 @@ app.get("/api/v1/tag/:name", function (req, res) {
 app.get("/*", function (req, res) {
   res.sendFile(__dirname + "/client/public/404.html");
 });
+
+// io.on("connection", (socket) => {
+//   console.log("Socket connected...");
+//   socket.on("disconnect", () => {
+//     console.log("Socket disconnected...");
+//   });
+// });
+
+// io.listen(8000);
 
 app.listen(port, () => {
   console.log(`App is listening on ${port}...`);
