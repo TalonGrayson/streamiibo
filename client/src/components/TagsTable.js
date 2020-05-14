@@ -11,7 +11,7 @@ class TagsTable extends Component {
   // Initialize state
   constructor(props) {
     super(props);
-    this.state = { myTags: [] };
+    this.state = { props: [], mostRecentChange: {} };
 
     this.populateTable = this.populateTable.bind(this);
     this.getMyTags = this.getMyTags.bind(this);
@@ -26,22 +26,43 @@ class TagsTable extends Component {
     this.getMyTags();
   }
 
-  populateTable = (myTags) => {
-    this.setState({ myTags });
+  populateTable = (props) => {
+    this.setState({ props });
   };
 
   getMyTags = () => {
     // Get the tags and store them in state
     fetch("/api/v1/mytags")
       .then((res) => res.json())
-      .then((myTags) => this.populateTable(myTags));
+      .then((props) => this.populateTable(props));
   };
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    this.state.props.forEach((oldTag) => {
+      const newTag = prevState.props.filter((tag) => tag.id === oldTag.id)[0];
+      if (newTag) {
+        for (let key of Object.keys(oldTag)) {
+          if (oldTag[key] !== newTag[key]) {
+            this.setState({
+              mostRecentChange: {
+                id: newTag.id,
+                changed: key,
+                changed_from: oldTag[key],
+                changed_to: newTag[key],
+              },
+            });
+            return;
+          }
+        }
+      }
+    });
+  }
+
   render() {
-    const { myTags } = this.state;
+    const { props } = this.state;
 
     return (
-      <table className="table table-dark table-striped">
+      <table className="table table-dark table-sm table-striped table-hover">
         <thead>
           <tr>
             <th>Name</th>
@@ -57,10 +78,24 @@ class TagsTable extends Component {
           </tr>
         </thead>
         <tbody>
-          {myTags.map((tag, i) => {
+          {props.map((tag, i) => {
+            if (tag.id === this.state.mostRecentChange.id) {
+              console.log(
+                `This is the changed tag: ${JSON.stringify(
+                  this.state.mostRecentChange
+                )}`
+              );
+            }
             return (
               <Fragment>
-                <tr key={`tag_${tag.id}`}>
+                <tr
+                  key={`tag_${tag.id}`}
+                  className={
+                    tag.id === this.state.mostRecentChange.id
+                      ? "bg-success"
+                      : ""
+                  }
+                >
                   <td key={`name_${tag.id}`}>{tag.name}</td>
                   <td key={`origin_${tag.id}`}>{tag.origin}</td>
                   <td key={`type_${tag.id}`}>{tag.type}</td>

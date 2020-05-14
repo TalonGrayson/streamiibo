@@ -8,10 +8,6 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Use Socket.IO for full duplex between server and client
-// const http = require("http").Server(app);
-// const io = require("socket.io")(http);
-
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
 
@@ -107,15 +103,6 @@ app.get("/api/v1/tag/:name", function (req, res) {
 app.get("/*", function (req, res) {
   res.sendFile(__dirname + "/client/public/404.html");
 });
-
-// io.on("connection", (socket) => {
-//   console.log("Socket connected...");
-//   socket.on("disconnect", () => {
-//     console.log("Socket disconnected...");
-//   });
-// });
-
-// io.listen(8000);
 
 app.listen(port, () => {
   console.log(`App is listening on ${port}...`);
