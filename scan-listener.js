@@ -6,7 +6,7 @@ const token = process.env.PARTICLE_ACCESS_TOKEN;
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
-let io = require("socket.io")(http);
+const io = require("socket.io")(http);
 
 //  Tag model
 const Tag = require("./models/Tag");

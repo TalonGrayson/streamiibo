@@ -1,9 +1,11 @@
 import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 
-import openSocket from "socket.io-client";
+import socketIOClient from "socket.io-client";
 
-const socket = openSocket("http://localhost:8000");
+const ENDPOINT = "http://127.0.0.1:8000";
+
+const socket = socketIOClient(ENDPOINT);
 
 const moment = require("moment");
 
@@ -15,6 +17,8 @@ class TagsTable extends Component {
 
     this.populateTable = this.populateTable.bind(this);
     this.getMyTags = this.getMyTags.bind(this);
+    this.componentToHex = this.componentToHex.bind(this);
+    this.rgbToHex = this.rgbToHex.bind(this);
 
     socket.on("scan_detected", (msg) => {
       this.getMyTags();
@@ -35,6 +39,30 @@ class TagsTable extends Component {
     fetch("/api/v1/mytags")
       .then((res) => res.json())
       .then((props) => this.populateTable(props));
+  };
+
+  componentToHex = (c) => {
+    var hex = parseInt(c).toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+  };
+
+  rgbToHex = (rgb) => {
+    const splitRGB = rgb.split(",");
+    const r = this.componentToHex(splitRGB[0]);
+    const g = this.componentToHex(splitRGB[1]);
+    const b = this.componentToHex(splitRGB[2]);
+    return `#${r}${g}${b}`;
+  };
+
+  hexToRgb = (hex) => {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
+      : null;
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -79,13 +107,6 @@ class TagsTable extends Component {
         </thead>
         <tbody>
           {props.map((tag, i) => {
-            if (tag.id === this.state.mostRecentChange.id) {
-              console.log(
-                `This is the changed tag: ${JSON.stringify(
-                  this.state.mostRecentChange
-                )}`
-              );
-            }
             return (
               <Fragment>
                 <tr
@@ -103,7 +124,14 @@ class TagsTable extends Component {
                   <td key={`attack_${tag.id}`}>{tag.attack}</td>
                   <td key={`defense_${tag.id}`}>{tag.defense}</td>
                   <td key={`speed_${tag.id}`}>{tag.speed}</td>
-                  <td key={`lightRGB_${tag.id}`}>{tag.light_rgb}</td>
+                  <td key={`lightRGB_${tag.id}`}>
+                    <input
+                      type="color"
+                      id={`colorpicker_${tag.id}`}
+                      onchange="clickColor(0, -1, -1, 5)"
+                      value={this.rgbToHex(tag.light_rgb)}
+                    />
+                  </td>
                   <td key={`lastScanTime_${tag.id}`}>
                     {moment(tag.lastScanTime).format("MM/DD/YYYY h:mm a")}
                   </td>
