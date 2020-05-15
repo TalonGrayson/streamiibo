@@ -3,10 +3,6 @@ import { Link } from "react-router-dom";
 
 import socketIOClient from "socket.io-client";
 
-// Use .env file for local environment variables
-const dotenv = require("dotenv");
-dotenv.config();
-
 const ENDPOINT =
   process.env.NODE_ENV === "development"
     ? "http://127.0.0.1:8000"
