@@ -6,10 +6,12 @@ const token = process.env.PARTICLE_ACCESS_TOKEN;
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
-const io = require("socket.io")(http);
+const io = (module.exports.io = require("socket.io")(http));
 
 //  Tag model
 const Tag = require("./models/Tag");
+
+const PORT = process.env.PORT || 8000;
 
 findOrCreateTag = (id) => {
   return Tag.findOne({ id: id }).then((tag) => {
@@ -121,13 +123,13 @@ performTagAction = (scannedTag) => {
 };
 
 io.on("connection", (socket) => {
-  console.log("Socket connected...");
+  console.log("Server Socket connected...");
   socket.on("disconnect", () => {
     console.log("Socket disconnected...");
   });
 });
 
-io.listen(8000);
+http.listen(PORT);
 
 module.exports.particleEventListener = (incoming_payload) => {
   findOrCreateTag(incoming_payload.data);

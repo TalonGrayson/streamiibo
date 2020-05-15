@@ -3,7 +3,12 @@ import { Link } from "react-router-dom";
 
 import socketIOClient from "socket.io-client";
 
-const ENDPOINT = "http://127.0.0.1:8000";
+// Use .env file for local environment variables
+const dotenv = require("dotenv");
+dotenv.config();
+
+const ENDPOINT =
+  process.env.NODE_ENV === "development" ? "http://127.0.0.1:8000" : "/";
 
 const socket = socketIOClient(ENDPOINT);
 
@@ -23,6 +28,8 @@ class TagsTable extends Component {
     socket.on("scan_detected", (msg) => {
       this.getMyTags();
     });
+    console.log(process.env.NODE_ENV);
+    debugger;
   }
 
   // Fetch passwords after first mount
