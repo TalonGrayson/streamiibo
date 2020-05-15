@@ -8,7 +8,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const ENDPOINT =
-  process.env.NODE_ENV === "development" ? "http://127.0.0.1:8000" : "/";
+  process.env.NODE_ENV === "development"
+    ? "http://127.0.0.1:8000"
+    : "https://streamiibo.herokuapp.com/";
 
 const socket = socketIOClient(ENDPOINT);
 
