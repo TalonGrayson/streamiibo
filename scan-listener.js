@@ -11,7 +11,7 @@ const io = (module.exports.io = require("socket.io")(http));
 //  Tag model
 const Tag = require("./models/Tag");
 
-const PORT = 8123;
+const PORT = 8000;
 
 findOrCreateTag = (id) => {
   return Tag.findOne({ id: id }).then((tag) => {

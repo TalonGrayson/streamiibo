@@ -6,7 +6,7 @@ import socketIOClient from "socket.io-client";
 const ENDPOINT =
   process.env.NODE_ENV === "development"
     ? "http://127.0.0.1:8000"
-    : "https://streamiibo.herokuapp.com:8123/";
+    : "https://streamiibo.herokuapp.com:8000/";
 
 const socket = socketIOClient(ENDPOINT);
 
@@ -131,7 +131,7 @@ class TagsTable extends Component {
                     <input
                       type="color"
                       id={`colorpicker_${tag.id}`}
-                      onchange="clickColor(0, -1, -1, 5)"
+                      onChange="clickColor(0, -1, -1, 5)"
                       value={this.rgbToHex(tag.light_rgb)}
                     />
                   </td>
