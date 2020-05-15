@@ -130,7 +130,11 @@ io.on("connection", (socket) => {
   });
 });
 
-http.listen(PORT);
+let io = http.listen(PORT);
+io.configure = () -> {
+  io.set("transports", ["xhr-polling"])
+  io.set("polling duration", 10)
+}
 
 module.exports.particleEventListener = (incoming_payload) => {
   findOrCreateTag(incoming_payload.data);
