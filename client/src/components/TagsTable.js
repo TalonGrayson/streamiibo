@@ -26,8 +26,6 @@ class TagsTable extends Component {
     socket.on("scan_detected", (msg) => {
       this.getMyTags();
     });
-    console.log(process.env.NODE_ENV);
-    debugger;
   }
 
   // Fetch passwords after first mount

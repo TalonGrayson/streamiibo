@@ -124,6 +124,7 @@ performTagAction = (scannedTag) => {
 
 io.on("connection", (socket) => {
   console.log("Server Socket connected...");
+  console.log(socket);
   socket.on("disconnect", () => {
     console.log("Socket disconnected...");
   });
