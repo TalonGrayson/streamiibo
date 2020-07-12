@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import "./App.css";
 
 // Component imports
 import Navbar from "./components/Navbar";
@@ -11,7 +12,7 @@ class App extends Component {
       <Router>
         <div className="App">
           <Navbar />
-          <TagsTable />
+          <Route path="/" exact component={TagsTable} />
         </div>
       </Router>
     );

@@ -6,12 +6,10 @@ const token = process.env.PARTICLE_ACCESS_TOKEN;
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
-const io = (module.exports.io = require("socket.io")(http));
+const io = require("socket.io")(http);
 
 //  Tag model
 const Tag = require("./models/Tag");
-
-const PORT = 8000;
 
 findOrCreateTag = (id) => {
   return Tag.findOne({ id: id }).then((tag) => {
@@ -19,7 +17,7 @@ findOrCreateTag = (id) => {
       const newTag = new Tag({
         id: id,
         origin: "Unknown origin",
-        type: "Unkown type",
+        type: "Unknown type",
         name: "Unknown name",
         lastScanTime: Date(Date.now()),
         health: Math.floor(Math.random() * 10) + 1,
@@ -51,90 +49,14 @@ findOrCreateTag = (id) => {
   });
 };
 
-performTagAction = (scannedTag) => {
-  switch (scannedTag.name) {
-    case "Mega Man":
-      obsCon.obs.send("SetCurrentScene", {
-        "scene-name": "Digital Work",
-      });
-      break;
-    case "Boba Fett":
-      obsCon.obs.send("SetCurrentScene", {
-        "scene-name": "Physical Work",
-      });
-      break;
-    case "Hulk (Terrain)":
-      obsCon.obs
-        .send("SetSceneItemProperties", {
-          "scene-name": "Popups",
-          item: "Bonjovi",
-          visible: true,
-        })
-        .then(
-          setTimeout(function () {
-            obsCon.obs.send("SetSceneItemProperties", {
-              "scene-name": "Popups",
-              item: "Bonjovi",
-              visible: false,
-            });
-          }, 9000)
-        );
-      break;
-    case "Darth Vader (Force FX)":
-      obsCon.obs
-        .send("SetSceneItemProperties", {
-          "scene-name": "Popups",
-          item: "IAmTheHype",
-          visible: true,
-        })
-        .then(
-          setTimeout(function () {
-            obsCon.obs.send("SetSceneItemProperties", {
-              "scene-name": "Popups",
-              item: "IAmTheHype",
-              visible: false,
-            });
-          }, 4000)
-        );
-      break;
-    case "Infinity Gauntlet":
-      obsCon.obs
-        .send("SetSceneItemProperties", {
-          "scene-name": "Popups",
-          item: "ShotDisclaimer",
-          visible: true,
-        })
-        .then(
-          setTimeout(function () {
-            obsCon.obs.send("SetSceneItemProperties", {
-              "scene-name": "Popups",
-              item: "ShotDisclaimer",
-              visible: false,
-            });
-          }, 5000)
-        );
-      break;
-    default:
-      console.log(
-        `Tag with ID ${scannedTag.id} has no actions associated to it!`
-      );
-      break;
-  }
-};
-
 io.on("connection", (socket) => {
-  console.log("Server Socket connected...");
-  console.log(socket);
+  console.log("Socket connected...");
   socket.on("disconnect", () => {
     console.log("Socket disconnected...");
   });
 });
 
-let io = http.listen(PORT);
-io.configure = () -> {
-  io.set("transports", ["xhr-polling"])
-  io.set("polling duration", 10)
-}
+io.listen(8000);
 
 module.exports.particleEventListener = (incoming_payload) => {
   findOrCreateTag(incoming_payload.data);

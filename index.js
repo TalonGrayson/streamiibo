@@ -1,11 +1,13 @@
-// Use .env file for local environment variables
-const dotenv = require("dotenv");
-dotenv.config();
-
 // Use Express for routing
 const express = require("express");
 const path = require("path");
 const app = express();
+
+if (app.settings.env === "development") {
+  const dotenv = require("dotenv");
+  dotenv.config();
+}
+
 const port = process.env.PORT || 5000;
 
 // Serve static files from the React app
@@ -83,11 +85,11 @@ app.get("/api/v1/mytags", function (req, res) {
   getActiveTags().then((tags) => res.send(tags));
 });
 
-app.get("/api/v1/mytags/delete/:tag_id", function (req, res) {
+app.get("/api/v1/mytags/delete/:tag_id", async (req, res) => {
   console.log(`Deleting ${req.params.tag_id}...`);
 
   Tag.findByIdAndUpdate(
-    req.params.id,
+    req.params.tag_id,
     { deleted: true },
     { new: true },
     function (err, tag) {

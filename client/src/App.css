@@ -1,3 +1,11 @@
 body {
   background: "000";
 }
+
+.hidden {
+  display: none;
+}
+
+.margin-left-2em {
+  margin-left: 2em;
+}

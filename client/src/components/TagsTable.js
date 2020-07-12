@@ -1,20 +1,19 @@
 import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 import socketIOClient from "socket.io-client";
 
-const ENDPOINT =
-  process.env.NODE_ENV === "development"
-    ? "http://127.0.0.1:8000"
-    : "https://streamiibo.herokuapp.com:8000/";
+const ENDPOINT = "http://127.0.0.1:8000";
 
-const socket = socketIOClient(window.location.hostname);
+const socket = socketIOClient(ENDPOINT);
 
 const moment = require("moment");
 
 class TagsTable extends Component {
   // Initialize state
   constructor(props) {
+    console.log(window.location.hostname);
     super(props);
     this.state = { props: [], mostRecentChange: {} };
 
@@ -22,6 +21,7 @@ class TagsTable extends Component {
     this.getMyTags = this.getMyTags.bind(this);
     this.componentToHex = this.componentToHex.bind(this);
     this.rgbToHex = this.rgbToHex.bind(this);
+    this.deleteTag = this.deleteTag.bind(this);
 
     socket.on("scan_detected", (msg) => {
       this.getMyTags();
@@ -40,6 +40,13 @@ class TagsTable extends Component {
   getMyTags = () => {
     // Get the tags and store them in state
     fetch("/api/v1/mytags")
+      .then((res) => res.json())
+      .then((props) => this.populateTable(props));
+  };
+
+  deleteTag = (_id) => {
+    axios
+      .delete(`/api/v1/mytags/delete/${_id}`)
       .then((res) => res.json())
       .then((props) => this.populateTable(props));
   };
@@ -96,6 +103,7 @@ class TagsTable extends Component {
       <table className="table table-dark table-sm table-striped table-hover">
         <thead>
           <tr>
+            <th></th>
             <th>Name</th>
             <th>Origin</th>
             <th>Type</th>
@@ -105,7 +113,7 @@ class TagsTable extends Component {
             <th>Speed</th>
             <th>Light RGB</th>
             <th>Last Seen</th>
-            <th colSpan="2"></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -120,6 +128,11 @@ class TagsTable extends Component {
                       : ""
                   }
                 >
+                  <td key={`edit_${tag.id}`}>
+                    <button className="margin-left-2em btn btn-sm btn-primary">
+                      <i className="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
                   <td key={`name_${tag.id}`}>{tag.name}</td>
                   <td key={`origin_${tag.id}`}>{tag.origin}</td>
                   <td key={`type_${tag.id}`}>{tag.type}</td>
@@ -128,23 +141,22 @@ class TagsTable extends Component {
                   <td key={`defense_${tag.id}`}>{tag.defense}</td>
                   <td key={`speed_${tag.id}`}>{tag.speed}</td>
                   <td key={`lightRGB_${tag.id}`}>
-                    <input
-                      type="color"
-                      id={`colorpicker_${tag.id}`}
-                      onChange="clickColor(0, -1, -1, 5)"
-                      value={this.rgbToHex(tag.light_rgb)}
-                    />
+                    <form>
+                      <input
+                        type="color"
+                        id={`colorpicker_${tag._id}`}
+                        name={`colorpicker_${tag._id}`}
+                        value={this.rgbToHex(tag.light_rgb)}
+                      />
+                    </form>
                   </td>
                   <td key={`lastScanTime_${tag.id}`}>
                     {moment(tag.lastScanTime).format("MM/DD/YYYY h:mm a")}
                   </td>
-                  <td key={`edit_${tag.id}`}>
-                    <i className="fas fa-pencil-alt"></i>
-                  </td>
                   <td key={`delete_${tag.id}`} id={`delete_${tag.id}`}>
                     <Link
-                      to={`/api/v1/mytags/delete/${tag._id}`}
-                      className="navbar-brand"
+                      to={`http://localhost:5000/api/v1/mytags/delete/${tag._id}`}
+                      className="btn btn-sm btn-danger"
                     >
                       <i className="fas fa-trash-alt"></i>
                     </Link>
