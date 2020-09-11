@@ -26,17 +26,27 @@ const scanListener = require("./scan-listener");
 
 devicesPr.then(
   function (devices) {
-    const device = devices.body.filter(
-      (device) => device.name === process.env.PARTICLE_DEVICE_NAME
-    )[0];
-    connectionStatus(device);
-    particle
-      .getEventStream({ name: "scanned_id", deviceId: device.id, auth: token })
-      .then(function (stream) {
-        stream.on("event", function (data) {
-          scanListener.particleEventListener(data);
+    const device_names = process.env.PARTICLE_DEVICE_NAME.split(",");
+
+    const found_devices = devices.body.filter((device) =>
+      device_names.includes(device.name)
+    );
+
+    found_devices.forEach((found_device) => {
+      connectionStatus(found_device);
+
+      particle
+        .getEventStream({
+          name: "scanned_id",
+          deviceId: found_device.id,
+          auth: token,
+        })
+        .then(function (stream) {
+          stream.on("event", function (data) {
+            scanListener.particleEventListener(data);
+          });
         });
-      });
+    });
   },
   function (err) {
     console.log("List devices call failed: ", err);
