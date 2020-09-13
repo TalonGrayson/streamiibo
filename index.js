@@ -37,7 +37,7 @@ devicesPr.then(
 
       particle
         .getEventStream({
-          name: "scanned_id",
+          name: "incoming_scan",
           deviceId: found_device.id,
           auth: token,
         })

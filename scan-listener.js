@@ -11,11 +11,11 @@ const io = require("socket.io")(http);
 //  Tag model
 const Tag = require("./models/Tag");
 
-findOrCreateTag = (id) => {
-  return Tag.findOne({ id: id }).then((tag) => {
+findOrCreateTag = (payload) => {
+  return Tag.findOne({ id: payload.id }).then((tag) => {
     if (!tag) {
       const newTag = new Tag({
-        id: id,
+        id: payload.id,
         origin: "Unknown origin",
         type: "Unknown type",
         name: "Unknown name",
@@ -35,15 +35,14 @@ findOrCreateTag = (id) => {
     tag.lastScanTime = Date(Date.now());
     tag.deleted = false;
     tag.save();
-    console.log(
-      `{"origin": "${tag.origin}", "type": "${tag.type}", "name": "${tag.name}", "light_rgb": "${tag.light_rgb}"}`
-    );
+
     particle.publishEvent({
       name: "scan_info",
       data: `{
-          "origin": "${tag.origin}", 
-        "type": "${tag.type}", 
-        "name": "${tag.name}", 
+        "device": "${payload.device}",
+        "origin": "${tag.origin}",
+        "type": "${tag.type}",
+        "name": "${tag.name}",
         "light_rgb": "${tag.light_rgb}"
       }`,
       isPrivate: true,
@@ -66,5 +65,6 @@ io.on("connection", (socket) => {
 io.listen(8000);
 
 module.exports.particleEventListener = (incoming_payload) => {
-  findOrCreateTag(incoming_payload.data);
+  const payload = JSON.parse(incoming_payload.data.replace(/'/g, '"'));
+  findOrCreateTag(payload);
 };
