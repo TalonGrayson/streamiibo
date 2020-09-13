@@ -12,6 +12,7 @@ const io = require("socket.io")(http);
 const Tag = require("./models/Tag");
 
 findOrCreateTag = (payload) => {
+  console.log(`ID: ${payload.id}`);
   return Tag.findOne({ id: payload.id }).then((tag) => {
     if (!tag) {
       const newTag = new Tag({
@@ -36,15 +37,28 @@ findOrCreateTag = (payload) => {
     tag.deleted = false;
     tag.save();
 
+    const data =
+      '{ "device": "' +
+      payload.device +
+      '","origin": "' +
+      tag.origin +
+      '","type": "' +
+      tag.type +
+      '","name": "' +
+      tag.name +
+      '","light_r": ' +
+      tag.light_rgb.split(",")[0] +
+      ',"light_g": ' +
+      tag.light_rgb.split(",")[1] +
+      ',"light_b": ' +
+      tag.light_rgb.split(",")[2] +
+      "}";
+
+    console.log(`Data: ${data}`);
+
     particle.publishEvent({
       name: "scan_info",
-      data: `{
-        "device": "${payload.device}",
-        "origin": "${tag.origin}",
-        "type": "${tag.type}",
-        "name": "${tag.name}",
-        "light_rgb": "${tag.light_rgb}"
-      }`,
+      data: data,
       isPrivate: true,
       auth: token,
     });
