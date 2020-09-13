@@ -55,9 +55,7 @@ devicesPr.then(
 
 connectionStatus = (device) => {
   console.log(
-    `${process.env.PARTICLE_DEVICE_NAME} ${
-      device.connected ? "is" : "is not"
-    } connected.`
+    `${device.name} ${device.connected ? "is" : "is not"} connected.`
   );
 };
 

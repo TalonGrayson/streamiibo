@@ -35,11 +35,17 @@ findOrCreateTag = (id) => {
     tag.lastScanTime = Date(Date.now());
     tag.deleted = false;
     tag.save();
-
+    console.log(
+      `{"origin": "${tag.origin}", "type": "${tag.type}", "name": "${tag.name}", "light_rgb": "${tag.light_rgb}"}`
+    );
     particle.publishEvent({
       name: "scan_info",
-      data:
-        "{origin: tag.origin,type: tag.type,name: tag.name,light_rgb: tag.light_rgb}",
+      data: `{
+          "origin": "${tag.origin}", 
+        "type": "${tag.type}", 
+        "name": "${tag.name}", 
+        "light_rgb": "${tag.light_rgb}"
+      }`,
       isPrivate: true,
       auth: token,
     });
