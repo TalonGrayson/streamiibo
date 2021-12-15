@@ -57,7 +57,7 @@ findOrCreateTag = (payload) => {
     console.log(`Data: ${data}`);
 
     particle.publishEvent({
-      name: "scan_info",
+      name: "event_info",
       data: data,
       isPrivate: true,
       auth: token,
